@@ -11,4 +11,10 @@ produtoRoutes.post(
   produtoController.uploadImage, // controller para tratar a requisição
 );
 
+produtoRoutes.post(
+  "/upload/files", // endpoint de upload
+  uploadFile, // middleware de upload
+  produtoController.uploadFile, // controller para tratar a requisição
+);
+
 export default produtoRoutes;
