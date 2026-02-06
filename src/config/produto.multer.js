@@ -10,35 +10,36 @@ const verificaDir = (dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
-
-  const createMulter = ({ folder, allowTypes, fileSize }) => {
-    // Cria o diretório de upload se não existir (/uploads/{folder})
-    const uploadDir = path.join(baseUploadDir, folder);
-    // verifica se o diretório existe
-    verificaDir(uploadDir);
-
-    const storage = multer.diskStorage({
-      destination: (req, fileSize, cb) => {
-        cb(null, uploadDir);
-      },
-      filename: (req, file, cb) => {
-        // Gera um nome de arquivo único usando crypto
-        const hash = crypto.randomBytes(12).toString("hex");
-        cb(null, `${hash}-${file.originalname}`);
-      },
-    });
-    const fileFilter = (req, file, cb) => {
-      if (!allowTypes.includes(file.mimetype)) {
-        return cb(new Error("Tipo de arquivo não permitido")); // false para rejeitar o arquivo
-      }
-      cb(null, true); // true para aceitar o arquivo
-    };
-
-    return multer({
-      storage,
-      limits: { fileSize },
-      fileFilter,
-    });
-  };
 };
+
+const createMulter = ({ folder, allowTypes, fileSize }) => {
+  // Cria o diretório de upload se não existir (/uploads/{folder})
+  const uploadDir = path.join(baseUploadDir, folder);
+  // verifica se o diretório existe
+  verificaDir(uploadDir);
+
+  const storage = multer.diskStorage({
+    destination: (req, fileSize, cb) => {
+      cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+      // Gera um nome de arquivo único usando crypto
+      const hash = crypto.randomBytes(12).toString("hex");
+      cb(null, `${hash}-${file.originalname}`);
+    },
+  });
+  const fileFilter = (req, file, cb) => {
+    if (!allowTypes.includes(file.mimetype)) {
+      return cb(new Error("Tipo de arquivo não permitido")); // false para rejeitar o arquivo
+    }
+    cb(null, true); // true para aceitar o arquivo
+  };
+
+  return multer({
+    storage,
+    limits: { fileSize },
+    fileFilter,
+  });
+};
+
 export default createMulter;
